@@ -17,7 +17,7 @@ function newestImageTag() {
     while [[ $LINK != null ]]
     do
       LAST_LINK=$LINK 
-      NEXTLINK=$(curl -X HEAD -I -s "https://$REGISTRY$LINK"  | grep "Link:") 
+      NEXTLINK=$(curl -X HEAD -I -s "https://$REGISTRY$LINK"  | grep -i "Link:") 
       LINK=$(echo $NEXTLINK |  sed -e 's/.*<\(.*\)>.*/\1/')  
       if [[ $LINK == "" ]]
       then 
