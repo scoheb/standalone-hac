@@ -24,10 +24,6 @@ if [ -n "$QUAY_IO_KUBESECRET" ]; then
     kubectl create -f $TMP_QUAY --namespace=boot
     rm $TMP_QUAY
 fi
-
-# hac-dev assumes you only have one project, so this installs one starting with aaaa- 
-# to ensure it picks that as your default. 
-kubectl apply -f $ROOT/hack/default-appstudio-namespace.yaml
  
 REPO_PATH=argo-cd-apps/overlays/crc 
 REPO=$(git ls-remote --get-url $MY_GIT_FORK_REMOTE | sed 's|^git@github.com:|https://github.com/|')
