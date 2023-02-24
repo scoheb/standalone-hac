@@ -11,8 +11,6 @@ if [[ -z "$TARGET_HOSTNAME" ]]; then
 fi
 
 SSO_HOST_KEYCLOAK=$( kubectl get routes keycloak -n dev-sso  -o jsonpath={".spec.host"})
-echo "HOSTNAME for AUTH is: $TARGET_HOSTNAME"
-echo "KEYCLOAK AUTH is: $SSO_HOST_KEYCLOAK" 
 
 cat << EOF > $ROOT/components/hac-boot/environment.yaml
 apiVersion: cloud.redhat.com/v1alpha1
@@ -28,4 +26,6 @@ EOF
 
 yq -i '.spec.rules[0].host="'$TARGET_HOSTNAME'"'  $ROOT/components/hac-boot/proxy-ingress.yaml
 
-echo "You need to commit this for it to take effect "
+echo "[INFO] SSO configuration for Frontend:"
+echo "$ROOT/components/hac-boot/proxy-ingress.yaml has been updated to $TARGET_HOSTNAME"
+echo "$ROOT/components/hac-boot/environment.yaml has been updated to "https://$SSO_HOST_KEYCLOAK/auth/" "
