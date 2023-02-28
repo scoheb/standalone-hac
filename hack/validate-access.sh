@@ -16,8 +16,8 @@ if [ "$(oc auth can-i '*' '*' --all-namespaces)" != "yes" ]; then
   exit 1
 fi
 
-# TODO: We can compute this user name  
-export SOUP_USER=user1
+# Compute this user name as first keycloak 
+export SOUP_USER=$(kubectl get KeycloakRealm redhat-external -n dev-sso -o jsonpath={.spec.realm.users[0].username})
 export SOUP_USER_NS=$SOUP_USER-tenant
 oc get ns $SOUP_USER_NS > /dev/null 2>&1
 ERR=$? 
