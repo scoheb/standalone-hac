@@ -20,5 +20,12 @@ spec:
               number: 8000
         path: /api/k8s
         pathType: Prefix
+      - backend:
+          service:
+            name: hac-proxy
+            port:
+              number: 8000
+        path: /wss/k8s
+        pathType: Prefix
   tls:
   - {}
