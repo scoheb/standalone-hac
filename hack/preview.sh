@@ -54,7 +54,16 @@ while true; do
         break
     fi
 done 
-wait 
+wait  
+
+if [ "$1" = "rebuilder"]; then
+    ./hack/install-rebuilder
+else 
+echo  
+echo "If you want to try the autobuilder (polling) use ./hack/install-rebuilder"   
+echo "or pass "rebuilder" to preview.sh"   
+echo  
+fi
    
 echo  
 echo "You are $SOUP_USER, find your soup at https://$SOUP_HOSTNAME/hac/stonesoup"   
