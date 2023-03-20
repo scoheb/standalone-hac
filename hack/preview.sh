@@ -57,6 +57,7 @@ done
 wait  
  
 if [ "$1" = "rebuilder" ] || [ "$SOUP_REBUILDER" = "true" ]; then
+    echo "Installing Auto-Rebuild Polling Utility"    
     ./hack/install-rebuilder
 else 
 echo  
