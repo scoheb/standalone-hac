@@ -55,13 +55,14 @@ while true; do
     fi
 done 
 wait  
-
-if [ "$1" = "rebuilder" ]; then
+ 
+if [ "$1" = "rebuilder" ] || [ "$SOUP_REBUILDER" = "true" ]; then
     ./hack/install-rebuilder
 else 
 echo  
 echo "If you want to try the autobuilder (polling) use ./hack/install-rebuilder"   
-echo "or pass "rebuilder" to preview.sh"   
+echo "Pass "rebuilder" to preview.sh or;"    
+echo "Set SOUP_REBUILDER=true to always install"   
 echo  
 fi
    
