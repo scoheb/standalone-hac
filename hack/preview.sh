@@ -56,7 +56,7 @@ while true; do
 done 
 wait  
 
-if [ "$1" = "rebuilder"]; then
+if [ "$1" = "rebuilder" ]; then
     ./hack/install-rebuilder
 else 
 echo  
