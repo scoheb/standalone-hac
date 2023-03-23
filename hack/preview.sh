@@ -58,10 +58,10 @@ wait
  
 if [ "$1" = "rebuilder" ] || [ "$SOUP_REBUILDER" = "true" ]; then
     echo "Installing Auto-Rebuild Polling Utility"    
-    ./hack/install-rebuilder
+    ./hack/rebuilder/install-rebuilder
 else 
 echo  
-echo "If you want to try the autobuilder (polling) use ./hack/install-rebuilder"   
+echo "If you want to try the autobuilder (polling) use ./hack/rebuilder/install-rebuilder"   
 echo "Pass "rebuilder" to preview.sh or;"    
 echo "Set SOUP_REBUILDER=true to always install"   
 echo  

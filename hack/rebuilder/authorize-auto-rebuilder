@@ -8,7 +8,8 @@ do
         echo "rebuilder route not ready" 
     else   
         curl -s -k https://$RT/authorize?id=$(oc whoami --show-token) >/tmp/rebuilder-ok 
-        if grep -q "OK" /tmp/rebuilder-ok; then
+        echo curl -s -k https://$RT/authorize?id=$(oc whoami --show-token) 
+        if grep -q "Redirecting" /tmp/rebuilder-ok; then
             echo "Success: Authorized at $RT"
             exit
         else
