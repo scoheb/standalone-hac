@@ -14,7 +14,8 @@ if [ "$1" = "push" ]; then
   UPDATE=true 
   PUSH=true
 fi
-HAS_UPDATES=false
+export HAS_UPDATES=false
+UPDATES_FILE=$(mktemp)
 
 function newestImageTag() {
     SPEC=$1
@@ -51,7 +52,7 @@ function newestImageTag() {
       if [ $UPDATE = "true" ]; then
         printf "Update: %s/%s:%s  in file: %s (current is: %s) \n" $REGISTRY $REPO $LATEST_TAG $FILE $CURRENT_TAG
         yq -i "$SPEC=\"$FULL_IMAGE\"" "$ROOT/$FILE"
-        HAS_UPDATES=true
+        echo "HAS_UPDATES=true" >$UPDATES_FILE 
       else 
         printf "Needs Update: %s/%s:%s  in file: %s (current is: %s) \n" $REGISTRY $REPO $LATEST_TAG $FILE $CURRENT_TAG 
       fi 
@@ -60,6 +61,14 @@ function newestImageTag() {
     fi 
 }
 
+newestImageTag '.spec.image'  components/hac-boot/hac-core.yaml &
+newestImageTag '.spec.image'  components/hac-boot/hac-dev.yaml &
+newestImageTag '.spec.image'  components/hac-boot/chrome.yaml &
+newestImageTag '.spec.template.spec.containers[].image'  components/hac-fe-config/manager/manager.yaml &
+
+wait  
+. $UPDATES_FILE
+rm $UPDATES_FILE 
 if [ $HAS_UPDATES = "true" ]; then
     printf "Images have updates\n"
     if [ $PUSH = "true" ]; then 
@@ -67,13 +76,8 @@ if [ $HAS_UPDATES = "true" ]; then
       git commit -m "image updates"
       git push  
     else 
-      printf "Auto-push not set, pass push as param2\n" 
+      printf "Auto-push not set, pass push as first parameter\n" 
     fi
+else  
+    printf "No Images have updates\n"
 fi 
-
-newestImageTag '.spec.image'  components/hac-boot/hac-core.yaml   &
-newestImageTag '.spec.image'  components/hac-boot/hac-dev.yaml  &
-newestImageTag '.spec.image'  components/hac-boot/chrome.yaml    &
-newestImageTag '.spec.template.spec.containers[].image'  components/hac-fe-config/manager/manager.yaml  &
-
-wait 
