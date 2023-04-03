@@ -13,9 +13,7 @@ fi
 if [ "$1" = "push" ]; then
   UPDATE=true 
   PUSH=true
-fi
-export HAS_UPDATES=false
-UPDATES_FILE=$(mktemp)
+fi  
 
 function newestImageTag() {
     SPEC=$1
@@ -51,8 +49,7 @@ function newestImageTag() {
       FULL_IMAGE="$REGISTRY/$REPO:$LATEST_TAG"
       if [ $UPDATE = "true" ]; then
         printf "Update: %s/%s:%s  in file: %s (current is: %s) \n" $REGISTRY $REPO $LATEST_TAG $FILE $CURRENT_TAG
-        yq -i "$SPEC=\"$FULL_IMAGE\"" "$ROOT/$FILE"
-        echo "HAS_UPDATES=true" >$UPDATES_FILE 
+        yq -i "$SPEC=\"$FULL_IMAGE\"" "$ROOT/$FILE" 
       else 
         printf "Needs Update: %s/%s:%s  in file: %s (current is: %s) \n" $REGISTRY $REPO $LATEST_TAG $FILE $CURRENT_TAG 
       fi 
@@ -67,17 +64,15 @@ newestImageTag '.spec.image'  components/hac-boot/chrome.yaml &
 newestImageTag '.spec.template.spec.containers[].image'  components/hac-fe-config/manager/manager.yaml &
 
 wait  
-. $UPDATES_FILE
-rm $UPDATES_FILE 
-if [ $HAS_UPDATES = "true" ]; then
-    printf "Images have updates\n"
+if ! git diff --exit-code --quiet; then 
     if [ $PUSH = "true" ]; then 
+      printf "The repository has updates. Auto-push set to true, committing to branch\n"
       git add .
       git commit -m "image updates"
       git push  
     else 
-      printf "Auto-push not set, pass push as first parameter\n" 
-    fi
-else  
-    printf "No Images have updates\n"
+      printf "Auto-push not set:\n"
+      printf "Usage: $0 update  Make image changes without committing them to branch\n" 
+      printf "Usage: $0 push  Make image changes and commit/push the branch\n"  
+    fi 
 fi 
