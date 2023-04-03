@@ -7,6 +7,7 @@ REGISTRY=quay.io
 # pass "update" to fix files, and "push" to fix and push fixes to current branch
 UPDATE=false
 PUSH=false
+
 if [ "$1" = "update" ]; then
   UPDATE=true 
 fi
@@ -15,6 +16,12 @@ if [ "$1" = "push" ]; then
   PUSH=true
 fi  
 
+
+function usage() {
+      printf "Usage: show-current-images <option> \n" 
+      printf " Option: update - Make image changes without committing them to branch\n" 
+      printf " Option: push   - Make image changes and commit/push the branch\n"  
+}
 function newestImageTag() {
     SPEC=$1
     FILE=$2
@@ -71,8 +78,10 @@ if ! git diff --exit-code --quiet; then
       git commit -m "image updates"
       git push  
     else 
-      printf "Auto-push not set:\n"
-      printf "Usage: $0 update  Make image changes without committing them to branch\n" 
-      printf "Usage: $0 push  Make image changes and commit/push the branch\n"  
-    fi 
+      usage
+    fi
+else 
+  if [ "$1" = "" ]; then
+    usage
+  fi
 fi 
